@@ -1,0 +1,38 @@
+<h1>Players</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>First</th>
+      <th>Last</th>
+      <th>Points</th>
+      <th>Rebounds</th>
+      <th>Assists</th>
+      <th>Steals</th>
+      <th>Blocks</th>
+      <th>Turnovers</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @players.each do |player| %>
+      <tr>
+        <td><%= player.first %></td>
+        <td><%= player.last %></td>
+        <td><%= player.points %></td>
+        <td><%= player.rebounds %></td>
+        <td><%= player.assists %></td>
+        <td><%= player.steals %></td>
+        <td><%= player.blocks %></td>
+        <td><%= player.turnovers %></td>
+        <td><%= link_to 'Show', player %></td>
+        <td><%= link_to 'Edit', edit_player_path(player) %></td>
+        <td><%= link_to 'Destroy', player, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Player', new_player_path %>
