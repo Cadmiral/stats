@@ -7,7 +7,7 @@ DB=Sequel.connect(:adapter => 'postgres', :host => 'localhost', :database => 'st
 def name 
 #read getTables.rb script and creat table and data 
   tables=eval(File.read(File.expand_path("tables")))
-  DB << "DROP TABLE IF EXISTS player" << "CREATE TABLE player (first VARCHAR(32), last VARCHAR(32), points INT(32), rebounds VARCHAR(32), assists VARCHAR(64), steals VARCHAR(64), blocks VARCHAR(64), turnovers VARCHAR(64))" 
+  DB << "DROP TABLE IF EXISTS player" << "CREATE TABLE player (first VARCHAR(32), last VARCHAR(32), points VARCHAR(32), rebounds VARCHAR(32), assists VARCHAR(64), steals VARCHAR(64), blocks VARCHAR(64), turnovers VARCHAR(64))" 
   tables.each do |x|
   	xname=x[:name]
   		if xname.chomp == ""
