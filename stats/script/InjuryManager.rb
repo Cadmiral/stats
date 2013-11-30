@@ -41,7 +41,6 @@ class InjuryManager
 				end
 			}
 
-
 			return data
 		end # end getInjuryData
 
@@ -65,8 +64,28 @@ class InjuryManager
 
 		# Unit Test
 		def runTest
-			puts "------- START TEST --------"
-			myTeam = ["Shaun Livingston", "Keith Bogans", "Steven Funasaki"];
+			puts "------- START INJURED PLAYER TEST --------"
+
+			#myTeam = ["Shaun Livingston", "Keith Bogans", "Steven Funasaki"];
+			myTeam = ["Nate Robinson",
+						"John Wall",
+						"Rodney Stuckey",
+						"James Anderson",
+						"Khris Middleton",
+						"Martell Webster",
+						"Anthony Davis",
+						"Serge Ibaka",
+						"Andrew Bogut",
+						"Michael Carter-Williams",
+						"Goran Dragic",
+						"Rodney Stuckey",
+						"Thabo Sefolosha",
+						"Martell Webster",
+						"Michael Beasley",
+						"Anthony Davis",
+						"Channing Frye",
+						"Andre Drummond"]
+
 			injuredPlayers = checkTeamForInjuries(myTeam);
 
 			for index in 0...injuredPlayers.length
@@ -76,7 +95,7 @@ class InjuryManager
 				print "\n"
 			end
 
-			puts "------- END TEST --------"
+			puts "------- END INJURED PLAYER TEST --------"
 		end # end runTest
 
 	private
