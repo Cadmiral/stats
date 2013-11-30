@@ -1,12 +1,9 @@
-#!/usr/bin/ruby1.8
-
-
 require 'nokogiri'
 require 'open-uri'
-require 'json'
 
-doc = Nokogiri::HTML(open('http://www.basketball-reference.com/leagues/NBA_2014_per_game.html')) #fetch data from site
-rows = doc.xpath('//table[@id="per_game"]/tbody/tr') #fetch these rows from site
+#fetch data from site and print out to file player_avg
+doc = Nokogiri::HTML(open('http://www.basketball-reference.com/leagues/NBA_2014_per_game.html')) 
+rows = doc.xpath('//table[@id="per_game"]/tbody/tr') 
 details = rows.collect do |row|
   detail = {}
   [
@@ -23,26 +20,12 @@ details = rows.collect do |row|
 
   ].each do |name, xpath|
     detail[name] = row.at_xpath(xpath).to_s.strip
-    
   end
-
   detail
 end
 
+puts details
 
-File.open("tables", "w") do |f|
+File.open("player_avg", "w") do |f|
   f.write(details)
 end
-
-
-
-# File.open("tables", "r") {|f| f[:name]=""}
-
-# tables=eval(File.read("/Users/canguyen/stats/script/tables"))
-
-# tables.each do |key, value|
-#   value.each do |k,v|
-#     puts k
-#     puts v
-#   end
-# end
