@@ -1,6 +1,10 @@
 require 'nokogiri'
 require 'open-uri'
 
+#delete game file if already exists
+if File.exists?("script/player_boxscore")
+File.delete("script/player_boxscore")
+end
 
 #read names from player_avg 
 getName=eval(File.read("player_avg"))
@@ -26,14 +30,14 @@ getName.each do |x|
     first_two=first[0..1].downcase
 
     end
-
-    doc = Nokogiri::HTML(open("http://www.basketball-reference.com/players/#{last_first}/#{last_five}#{first_two}01/gamelog/2014"))
     
-    rows = doc.xpath('//table[@id="pgl_basic"]/tbody/tr') 
+doc = Nokogiri::HTML(open("http://www.basketball-reference.com/players/#{last_first}/#{last_five}#{first_two}01/gamelog/2014"))
+
+rows = doc.xpath('//table[@id="pgl_basic"]/tbody/tr') 
 
     details = rows.collect do |row|
       detail = {}
-      [
+      ([
         [:name, 'text()'],
         [:date, 'td[3]/a/text()'],
         [:opponent, 'td[7]/a/text()'],
@@ -45,17 +49,17 @@ getName.each do |x|
         [:blocks, 'td[25]/text()'],
         [:turnovers, 'td[26]/text()']
 
-      ].each do |name, xpath|
+      ]).each do |name, xpath|
       detail[name] = row.at_xpath(xpath).to_s.strip
       end
       detail
     end
 
-    #add name from player_avg 
-    details.each{|key| key[:name] = "#{xname}"}
+    #add name value into key :name
+    details.each{|key| key[:name] = "#{first} #{last}"}
     puts details
 
-    File.open("player_game", "a+") do |f|
+    File.open("player_boxscore", "a+") do |f|
     f.write(details)
     end
 end
