@@ -1,67 +1,73 @@
 require 'nokogiri'
 require 'open-uri'
 
-#delete game file if already exists
-if File.exists?("script/player_boxscore")
-File.delete("script/player_boxscore")
+#delete boxscore file if already exists
+if File.exists?("player_boxscore")
+    File.delete("player_boxscore")
 end
 
-#read names from player_avg 
-getName=eval(File.read("player_avg"))
-getName.each do |x|
-    xname=x[:name]
-    #delete rows with empty values
-    if xname.chomp == ""
-      getName.delete x
-    else 
+#read from file 
+table=File.read("player_url_name")
 
-    #split first and last names & remove quotes and spaces
-    player=xname.split(/\s+/,2) 
-    strip_first=player[0]
-    stripped=strip_first.tr("'","")
-    first=stripped.tr(" ","")
-    strip_last=player[1]
-    stripped_last=strip_last.tr("'","")
-    last=strip_last.tr(" ","")
+#modify file to read strings correctly
+player_url_name=table.split(/\n/)
 
-    #get first letter of last name and also first 5 letters of lastname + first 2 letters of firstname
-    last_first=last[0].downcase
-    last_five=last[0..4].downcase
-    first_two=first[0..1].downcase
-
+#create variables from file
+player_url_name.each do |a|
+    url_name = a
+    first_letter = a[0] 
+    if match = a.match(/\s*(\w+)\s+(\w+)\s+(\w+)\s*/)
+    url_name, first, last = match.captures
     end
-    
-doc = Nokogiri::HTML(open("http://www.basketball-reference.com/players/#{last_first}/#{last_five}#{first_two}01/gamelog/2014"))
 
-rows = doc.xpath('//table[@id="pgl_basic"]/tbody/tr') 
-
+#get data from bball-refernce
+    doc = Nokogiri::HTML(open("http://www.basketball-reference.com/players/#{first_letter}/#{url_name}/gamelog/2014"))
+    rows = doc.xpath('//table[@id="pgl_basic"]/tbody/tr') 
     details = rows.collect do |row|
       detail = {}
-      ([
-        [:name, 'text()'],
-        [:date, 'td[3]/a/text()'],
-        [:opponent, 'td[7]/a/text()'],
-        [:mins, 'td[10]/text()'],
-        [:points, 'td[28]/text()'],
-        [:rebounds, 'td[22]/text()'],
-        [:assists, 'td[23]/text()'],
-        [:steals, 'td[24]/text()'],
-        [:blocks, 'td[25]/text()'],
-        [:turnovers, 'td[26]/text()']
+          [
+            [:name, 'text()'],
+            [:team, 'td[5]/a/text()'],
+            [:date, 'td[3]/a/text()'],
+            [:home, 'td[6]/text()'],
+            [:opponent, 'td[7]/a/text()'],
+            [:mins, 'td[10]/text()'],
+            [:points, 'td[28]/text()'],
+            [:rebounds, 'td[22]/text()'],
+            [:assists, 'td[23]/text()'],
+            [:steals, 'td[24]/text()'],
+            [:blocks, 'td[25]/text()'],
+            [:turnovers, 'td[26]/text()']
 
-      ]).each do |name, xpath|
-      detail[name] = row.at_xpath(xpath).to_s.strip
-      end
-      detail
+          ].each do |name, xpath|
+          detail[name] = row.at_xpath(xpath).to_s.strip
+          end
+    detail
     end
 
-    #add name value into key :name
+#add value into key :name
     details.each{|key| key[:name] = "#{first} #{last}"}
+
+#change the home/away variables to human readable
+    details.each{|key| if key[:home]=="@"
+      key[:home] = "AWAY"
+    else
+      key[:home] = "HOME"
+    end
+    }
     puts details
 
+#create data file 
     File.open("player_boxscore", "a+") do |f|
     f.write(details)
     end
 end
+
+#remove unwanted array characters from file player_boxscore
+boxscore=File.read("player_boxscore")
+create_boxscore=boxscore.gsub("][", ", ")
+File.open("player_boxscore", "w") do |f|
+    f.write(create_boxscore)
+    end
 
 

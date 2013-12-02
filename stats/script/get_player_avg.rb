@@ -24,8 +24,15 @@ details = rows.collect do |row|
   detail
 end
 
-puts details
+#remove unwanted empty rows
+details.each do |x|
+  xname=x[:name]
+    if xname.chomp == ""
+      details.delete x
+    end
+  end
 
+#write file after removing unwanted rows
 File.open("player_avg", "w") do |f|
   f.write(details)
 end
