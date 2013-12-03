@@ -4,8 +4,9 @@
 class NBAPlayer
 	public
 	    # Populate the Object.
-	    def initialize(name, fantasy_salary)
+	    def initialize(name, position, fantasy_salary)
 	    	@name = name
+	    	@position = position
 	    	@fantasy_salary = fantasy_salary
 	    end
 
@@ -14,17 +15,34 @@ class NBAPlayer
 	      	return @name
 	    end
 
-	    def getFantasySalary
+	    def getPosition
+			return @position
+	    end
+
+	    def getFantasySalary_STR
 	      	return @fantasy_salary
 	    end
 
+	    def getFantasySalary_FLOAT
+	    	# TODO: Do this right.
 
-	    def setPosition(position)
-			@position = position
+	    	# Take off $
+	    	temp = @fantasy_salary.split("$")
+	    	temp = temp[1]
+	    	# Take off ,
+	    	temp = temp.split(',')
+
+	    	final = temp[0] + temp[1]
+
+	      	return final.to_f
 	    end
 
-	    def getPosition
-			return @position
+	    def setFGAttempts(fg_attempts)
+		    @fg_attempts = fg_attempts
+	    end
+
+	    def getFGAttempts
+	      	return @fg_attempts
 	    end
 
 	    def setFGPercentage(fg_percentage)
@@ -66,12 +84,28 @@ class NBAPlayer
 			return @avg_steals
 	    end
 
+	    def setAvgBlocks(avg_blocks)
+			@avg_blocks = avg_blocks
+	    end
+
+	    def getAvgBlocks
+			return @avg_blocks
+	    end
+
 	    def setAvgTurnovers(avg_turnovers)
 			@avg_turnovers = avg_turnovers
 	    end
 
 	    def getAvgTurnovers
 			return @avg_turnovers
+	    end
+
+	    def setAvgFouls(avg_fouls)
+			@avg_fouls = avg_fouls
+	    end
+
+	    def getAvgFouls
+			return @avg_fouls
 	    end
 
 	    def setAvgMinutes(avg_minutes)
@@ -90,25 +124,47 @@ class NBAPlayer
 			return @notes
 	    end
 
+	    def setAvgFantasyPoints(avg_fantasy_points)
+			@avg_fantasy_points = avg_fantasy_points
+	    end
+
+	    def getAvgFantasyPoints
+			return @avg_fantasy_points
+	    end
+
 	    def setFantasyValue(fantasy_value)
 			@fantasy_value = fantasy_value
 	    end
 
 	    def getFantasyValue
-			return @fantasyValue
+			return @fantasy_value
 	    end
+
+	    def setRating1(rating1)
+			@rating1 = rating1
+	    end
+
+	    def getRating1
+			return @rating1
+	    end
+
 
     private
     	@name
     	@position
     	@fantasy_salary
+    	@fg_attempts
     	@fg_percentage
     	@avg_points
 		@avg_assists
 		@avg_rebounds
 		@avg_steals
+		@avg_blocks
     	@avg_turnovers
+    	@avg_fouls
     	@avg_minutes
     	@notes
-    	@fantasyValue
+    	@fantasy_value
+    	@avg_fantasy_points
+    	@rating1
 end

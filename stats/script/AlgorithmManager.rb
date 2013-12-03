@@ -1,8 +1,7 @@
-
 require 'nokogiri'
 require 'open-uri'
-require_relative 'NBAPlayerManager'
-
+require_relative 'NBAAlgorithm'
+require_relative 'RatingSystem'
 # Notes:
 #
 # Time
@@ -39,40 +38,26 @@ class AlgorithmManager
 
 	public
 		def initialize
-			@back2back = false
-			@num_games = 10
-			@position = "ALL"
 			@filtered_array = Array.new
-			@num_output = 20
+			@num_output = 500
 		end
 
-		def runAlgorithm
-			# Populate Player Array
-			playerManager = NBAPlayerManager.new
-			@filtered_array = playerManager.getPlayerList
 
+		def runAlgorithm1
+			# ************************************
+			# * Description:
+			# * 	Calculate using the 3 more recent games
+			# ************************************
 
+			# Algorithm Code here.
+			algo1 = NBAAlgorithm.new
+			algo1.setB2B(false) # not working yet
+			algo1.setNumRecentGames(3) # works
+			algo1.setPosition('ALL') # works
+			@filtered_array = algo1.run
+
+			# Print the Final List
 			printPlayerList
-		end
-
-		# Input:
-		# => Boolean
-		def setB2B(flag)
-			if(flag == true || flag == false)
-				@back2back = flag
-			end
-		end
-
-		# Input:
-		# => Interger - Number of recent Games.
-		def setNumRecentGames(num_games)
-			@back2back = num_games
-		end
-
-		# Input:
-		# => String - PG, SG, SF, PF, C, ALL
-		def setPosition(flag)
-			@back2back = flag
 		end
 
 		# Input:
@@ -82,23 +67,44 @@ class AlgorithmManager
 		end
 
 		def printPlayerList
-			puts ""
-			for index in 0...@num_output
-				if(@filtered_array[index].getPosition == @position || @position == "ALL")
-					puts "-------------------------------"
-					print "%2s" % @filtered_array[index].getPosition + ": ";
-					print "%-25s" % @filtered_array[index].getName + " : ";
-					print "%7s" % @filtered_array[index].getFantasySalary + " : ";
-					puts ""
-				end
+
+			# TODO: Sort list on a Column
+
+			number_of_printouts = 0
+
+			if(@num_output > @filtered_array.length)
+				number_of_printouts = @filtered_array.length
+			else
+				number_of_printouts = @num_output
 			end
-			puts "-------------------------------"
+
+			puts "-------------------------------------------------------------------------------------------------------"
+			print "%3s" % "POS" + " : ";
+			print "%-25s" % "Player Name" + " : ";
+			print "%7s" % "Salary" + " : ";
+			print "%20s" % "Avg Fantasy Points" + " : ";
+			print "%20s" % "Fantasy Value" + " : ";
+			print "%10s" % "Rating1" + " : ";
+
+			if(@filtered_array.length > 0)
+				puts ""
+				for index in 0...number_of_printouts
+					if(@filtered_array[index].getAvgFantasyPoints > 20)
+						puts "-------------------------------------------------------------------------------------------------------"
+						print "%3s" % @filtered_array[index].getPosition + " : ";
+						print "%-25s" % @filtered_array[index].getName + " : ";
+						print "%7s" % @filtered_array[index].getFantasySalary_STR + " : ";
+						print "%20.2f" % @filtered_array[index].getAvgFantasyPoints + " : ";
+						print "%20.4f" % @filtered_array[index].getFantasyValue + " : ";
+						print "%10s" % @filtered_array[index].getRating1.to_s + " : ";
+						puts ""
+					end
+				end
+			puts "-------------------------------------------------------------------------------------------------------"
+			end
 		end
 
 	private
-		@back2back
-		@num_games
-		@position
 		@player_array
 		@num_output
 
