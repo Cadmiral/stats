@@ -12,15 +12,4 @@ begin
 
 	algoManager.runAlgorithm1
 #	algoManager.runAlgorithm2
-
-	# Check Injuries
-	#injuryManager = InjuryManager.new
-	#injuryManager.runTest
-
-
-	# Check Array of Player Names for injuries
-	# injuredPlayers = injuryManager.checkTeamForInjuries(arrayOfName)
-	# if(injuredPlayers.length > 0)
-	#     CHANGE SHIT
-	# end
 end

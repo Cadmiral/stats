@@ -98,6 +98,18 @@ class InjuryManager
 			puts "------- END INJURED PLAYER TEST --------"
 		end # end runTest
 
+		def removeInjuredPlayers(player_array)
+			player_array.each{
+				|player|
+
+				if player.getName == playerName
+					return true
+				end
+			}
+
+			return false
+		end # end isPlayerInjured		end
+
 	private
 		# Array of NBA Injuries
 		@injured_player_array
@@ -129,7 +141,10 @@ class InjuryManager
 					date = playerListPerTeam[teamIndex].css('td')[11+playerIndex*7].text
 					injury = playerListPerTeam[teamIndex].css('td')[12+playerIndex*7].text
 
-					player = InjuredPlayer.new(name, injury, date, status, pos, details, teamsList[teamIndex].text)
+					# Query DB to get Player id.
+					id = 0
+
+					player = InjuredPlayer.new(id, name, injury, date, status, pos, details, teamsList[teamIndex].text)
 					@injured_player_array.push(player)
 				end
 			end

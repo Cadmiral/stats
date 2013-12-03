@@ -9,6 +9,7 @@ class NBAPlayerManager
 		def initialize
 			@nbaplayer_array = Array.new
 			buildNBAPLayerList
+			#filterInjuries
 		end
 
 		def runTest
@@ -29,7 +30,7 @@ class NBAPlayerManager
 		# Output:
 		# =>  None
 		def buildNBAPLayerList
-			doc = Nokogiri::HTML(open('fanduel_salarylist_Nov29.html'))
+			doc = Nokogiri::HTML(open('fanduel_salarylist_Dec03.html'))
 			# <table class="condensed player-list-table"
 
 			player_table = doc.css('table.condensed')[2].css('tbody').css('tr')
@@ -38,11 +39,26 @@ class NBAPlayerManager
 				name = player_table[index].css('td')[1].text
 				fantasy_salary = player_table[index].css('td')[5].text
 
-				player = NBAPlayer.new(name, position, fantasy_salary)
+				# TODO: Get id from DB
+				id = 0
+
+				player = NBAPlayer.new(id, name, position, fantasy_salary)
 				@nbaplayer_array.push(player)
 			end
 
 			puts "Player List Length : " + @nbaplayer_array.length.to_s
 		end # end buildInjuriesList
+
+		def filterInjuries
+			puts "RUNNING INJURY FILTER"
+			puts "BEFORE COUNT: %d" % @nbaplayer_array.count
+			# Check Injuries
+			injuryManager = InjuryManager.new
+			new_array = injuryManager.removeInjuredPlayers(@nbaplayer_array)
+			@nbaplayer_array = new_array
+
+			puts "AFTER COUNT: %d" % @nbaplayer_array.count
+
+		end
 end
 
