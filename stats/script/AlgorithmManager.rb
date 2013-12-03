@@ -53,9 +53,24 @@ class AlgorithmManager
 			algo1 = NBAAlgorithm.new
 			algo1.setB2B(false) # not working yet
 			algo1.setNumRecentGames(3) # works
-			algo1.setPosition('ALL') # works
+			algo1.setPosition('PG') # works
 			@filtered_array = algo1.run
 
+
+			algo1.setPosition('SG') # works
+			@filtered_array = algo1.run
+
+
+			algo1.setPosition('SF') # works
+			@filtered_array = algo1.run
+
+
+			algo1.setPosition('PF') # works
+			@filtered_array = algo1.run
+
+
+			algo1.setPosition('C') # works
+			@filtered_array = algo1.run
 			# Print the Final List
 			printPlayerList
 		end

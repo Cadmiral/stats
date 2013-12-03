@@ -3,8 +3,9 @@
 
  class InjuredPlayer
     # Populate the Object.
-    def initialize(name, injury, dateOfInjury, status, position, details, team)
-		@name = name
+    def initialize(id, name, injury, dateOfInjury, status, position, details, team)
+		@id = id
+        @name = name
 	    @injury = injury
 	    @dateOfInjury = dateOfInjury
 	    @status = status
@@ -43,13 +44,14 @@
     end
 
     private
-    @name = ""
-    @injury =""
-    @dateOfInjury = ""
-    @status = ""
-    @position = ""
-    @details = ""
-    @team = ""
+    @id
+    @name
+    @injury
+    @dateOfInjury
+    @status
+    @position
+    @details
+    @team
 
 
   end

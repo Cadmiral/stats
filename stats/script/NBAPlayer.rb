@@ -4,7 +4,8 @@
 class NBAPlayer
 	public
 	    # Populate the Object.
-	    def initialize(name, position, fantasy_salary)
+	    def initialize(id, name, position, fantasy_salary)
+	    	@id = id
 	    	@name = name
 	    	@position = position
 	    	@fantasy_salary = fantasy_salary
@@ -150,6 +151,7 @@ class NBAPlayer
 
 
     private
+    	@id
     	@name
     	@position
     	@fantasy_salary
