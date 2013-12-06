@@ -61,7 +61,7 @@ class BuildNbaBoxScore
             }
             # DEBUG PRINT
             count += 1
-            puts "Count: " + count.to_s
+            print "Count: %d\r" % count.to_s
             #puts details
 
         #create data file

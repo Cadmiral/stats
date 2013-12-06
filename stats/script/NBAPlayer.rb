@@ -149,7 +149,21 @@ class NBAPlayer
 			return @rating1
 	    end
 
+	    def setOpponent(opponent)
+			@opponent = opponent
+	    end
 
+	    def getOpponent
+			return @opponent
+	    end
+
+	    def setOpponentDefRank(opponent)
+			@opponentDefRank = opponentDefRank
+	    end
+
+	    def getOpponentDefRank
+			return @opponentDefRank
+	    end
     private
     	@id
     	@name
@@ -169,4 +183,6 @@ class NBAPlayer
     	@fantasy_value
     	@avg_fantasy_points
     	@rating1
+    	@opponent
+    	@opponentDefRank
 end

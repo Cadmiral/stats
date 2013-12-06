@@ -2,37 +2,6 @@ require 'nokogiri'
 require 'open-uri'
 require_relative 'NBAAlgorithm'
 require_relative 'RatingSystem'
-# Notes:
-#
-# Time
-
-# 1) Last 5 Games played.
-
-# 2) Back to Back Games
-
-# Catagories
-# 1)
-
-# 2) Allowed Points by a Team
-
-# 3) Starter Injured on Opposing Team
-
-# 4) Points Per Dollar
-
-# 5) Point Value Per Position
-
-# Alert
-
-# 1) Coming back from injury
-
-# 2) Top 10 Defensive Team Yellow
-#	 Top 5  Defensive Team Red
-
-# 3)
-
-# Example
-#     Stats for last 5 back to back games.
-#     Stats for the last 5 games.
 
 class AlgorithmManager
 
