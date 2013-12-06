@@ -162,7 +162,7 @@ class NBAAlgorithm
 				end
 			}# end player interation for loop
 
-			puts "Count: " + myCount.to_s
+			puts @position + " -- Count: " + myCount.to_s
 
 			return @result_array
 

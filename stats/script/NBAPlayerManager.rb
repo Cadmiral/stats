@@ -1,3 +1,4 @@
+#!/usr/bin/ruby2.0.0
 
 require 'nokogiri'
 require 'open-uri'
@@ -30,7 +31,7 @@ class NBAPlayerManager
 		# Output:
 		# =>  None
 		def buildNBAPLayerList
-			doc = Nokogiri::HTML(open('fanduel_salarylist_Dec03.html'))
+			doc = Nokogiri::HTML(open('fanduel_salarylist_Dec04.html'))
 			# <table class="condensed player-list-table"
 
 			player_table = doc.css('table.condensed')[2].css('tbody').css('tr')
