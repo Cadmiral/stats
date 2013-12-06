@@ -99,15 +99,29 @@ class InjuryManager
 		end # end runTest
 
 		def removeInjuredPlayers(player_array)
+			healthyPlayer_array = Array.new
+
 			player_array.each{
 				|player|
+				isHealthy = true
 
-				if player.getName == playerName
-					return true
+				@injured_player_array.each{
+					|injuredplayer|
+					if player.getName == injuredplayer.getName
+						# Keep Day-to-Day Players.  But Mark them.
+						if(injuredplayer.getStatus == "Day-to-day")
+							player.setNotes(injuredplayer.getDetails)
+						else
+							isHealthy = false
+						end
+					end
+				}
+				if(isHealthy)
+					healthyPlayer_array.push(player)
 				end
 			}
 
-			return false
+			return healthyPlayer_array
 		end # end isPlayerInjured		end
 
 	private

@@ -10,7 +10,7 @@ class NBAPlayerManager
 		def initialize
 			@nbaplayer_array = Array.new
 			buildNBAPLayerList
-			#filterInjuries
+			filterInjuries
 		end
 
 		def runTest
@@ -55,8 +55,7 @@ class NBAPlayerManager
 			puts "BEFORE COUNT: %d" % @nbaplayer_array.count
 			# Check Injuries
 			injuryManager = InjuryManager.new
-			new_array = injuryManager.removeInjuredPlayers(@nbaplayer_array)
-			@nbaplayer_array = new_array
+			@nbaplayer_array = injuryManager.removeInjuredPlayers(@nbaplayer_array)
 
 			puts "AFTER COUNT: %d" % @nbaplayer_array.count
 
