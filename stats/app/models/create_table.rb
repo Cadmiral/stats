@@ -40,7 +40,7 @@ class CreateTable
         DB << "UPDATE player SET pos='SF', team_name='SAC' WHERE player_name='Derrick Williams'; UPDATE player SET pos='PF', team_name='MIN' WHERE player_name='Luc MbahaMoute'; UPDATE player SET avg_fd_points = (points+(rebounds*1.2)+(assists+1.5)+(blocks*2)+(steals*2)+(turnovers*-1))"
       end
     end
-    # create_player_table
+    create_player_table
 
 
     def self.create_boxscore_table
@@ -67,7 +67,7 @@ class CreateTable
         #UPDATE boxscore player_id to match TABLE player.player_id & UPDATE SUM of fd_points
         DB << "UPDATE boxscore SET player_id = player.player_id FROM player where player.player_name = boxscore.player_name; UPDATE boxscore SET fd_points = (points+(rebounds*1.2)+(assists+1.5)+(blocks*2)+(steals*2)+(turnovers*-1))"
     end
-    # create_boxscore_table
+    create_boxscore_table
 
 
     def self.create_schedule_table
@@ -92,7 +92,7 @@ class CreateTable
         DB << "UPDATE todays_game SET opponent=schedule.team_name FROM schedule WHERE todays_game.team_name = schedule.opponent AND todays_game.date=schedule.date"
         DB << "UPDATE todays_game SET opponent=schedule.opponent FROM schedule WHERE todays_game.team_name = schedule.team_name AND todays_game.date=schedule.date"
     end
-    # create_todays_game_table
+    create_todays_game_table
 
 
     def self.create_injury_list_table
@@ -120,7 +120,7 @@ class CreateTable
 
         end
     end
-    create_injury_list_table
+    # create_injury_list_table
 
 
     def self.update_salary
