@@ -20,7 +20,8 @@ development:
   encoding: unicode
   database: stats_development
   pool: 5
-  password:
+  username: postgres
+  password: pingpong21
 
   # Connect on a TCP socket. Omitted by default since the client uses a
   # domain socket that doesn't need configuration. Windows does not have
