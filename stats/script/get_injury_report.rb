@@ -1,5 +1,6 @@
 require 'nokogiri'
 require 'open-uri'
+require_relative '../app/models/create_table'
 
 class GetInjuryReport
   def initialize
@@ -28,6 +29,12 @@ class GetInjuryReport
         key[:name] = "Norlens Otto McCollum"
     end
     }
+
+    injury_list.each{|key| if key[:name]=="Nene"
+        key[:name] = "Nene Hilario"
+    end
+    }
+    
     injury_list.each{|key| case key[:team]
         when "Atlanta Hawks"
             key[:team] = "ATL"
@@ -104,6 +111,6 @@ class GetInjuryReport
         File.open("injury_list", "w") do |f|
             f.write(injuries)
         end
-
-  end
+    end
+    CreateTable.create_injury_list_table
 end

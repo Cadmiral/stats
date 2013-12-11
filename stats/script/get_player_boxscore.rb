@@ -1,5 +1,7 @@
 require 'nokogiri'
 require 'open-uri'
+require_relative '../app/models/create_table'
+
 
 class GetPlayerBoxscore
 
@@ -50,6 +52,14 @@ class GetPlayerBoxscore
                   detail[name] = row.at_xpath(xpath).to_s.strip
                   end
             detail
+            end
+
+        #remove unwanted empty rows
+            details.each do |x|
+                xname=x[:date]
+                    if xname.chomp == ""
+                    details.delete x
+                end
             end
 
         #add value into key :name

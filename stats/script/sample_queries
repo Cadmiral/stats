@@ -1,0 +1,35 @@
+Need to run testTables.rb (or main.rb)
+run create_table.rb
+run get_salaries.rb
+run these two queries in DB:
+
+To get $ per Pts:
+
+UPDATE todays_game SET dollar_per_point = round((salary/avg_fd_points),2);
+
+_____________
+
+
+select * from todays_game where pos='SF' AND avg_fd_points > 20 ORDER BY dollar_per_point;
+
+
+_____________
+
+alter table add 
+update todays_game with injury notes and report
+
+alter table todays_game add column injury VARCHAR(500), add column notes VARCHAR(500);
+update todays_game set (injury, notes) values (injury, notes from injury_list where todays_game.player_name = injury_list.player_name);
+
+
+
+
+_____________
+AVG FD_POINTS from last 3 games of specific player:
+
+select player_name, date, avg(fd_points) over (PARTITION BY player_name order by date rows between 2 preceding and current row) from boxscore where player_name ilike '%curry%' order by date desc limit 1;
+
+_____________
+AVG FD_POINTS from last 3 games of all players playing today:
+
+select player_name, date, avg(fd_points) over (PARTITION BY player_name order by date rows between 2 preceding and current row) AS avg_fd_points from boxscore order by date desc limit (select count(*) from todays_game);

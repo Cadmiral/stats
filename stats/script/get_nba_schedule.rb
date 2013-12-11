@@ -1,5 +1,6 @@
 require 'nokogiri'
 require 'open-uri'
+require_relative '../app/models/create_table'
 
 class GetNBASchedule
     def initialize
