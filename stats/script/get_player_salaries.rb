@@ -5,7 +5,7 @@ require 'open-uri'
 require 'pg'
 require 'sequel'
 
-DB=Sequel.connect(:adapter => 'postgres', :host => 'localhost', :database => 'stats_development')
+DB=Sequel.connect(:adapter => 'postgres', :host => 'localhost', :database => 'stats_development', :user=>'postgres', :password=>'pingpong21')
 
 class GetPlayerSalary
 	def initialize
@@ -67,7 +67,7 @@ class GetPlayerSalary
 			File.open("player_daily_salaries", "a++") do |f|
 	        f.write(salary)
 	      	end
-			
+
 			# Update the "todays_game" table in the Database
 			# DB << "UPDATE todays_game SET salary = #{xsalary} WHERE todays_game.player_name = '#{xname}'"
 			# DB << "UPDATE todays_game SET dollar_per_point = round((salary/avg_fd_points),2)"

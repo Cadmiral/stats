@@ -3,8 +3,7 @@
 require 'sequel'
 require 'pg'
 
-DB=Sequel.connect(:adapter => 'postgres', :host => 'localhost', :database => 'stats_development')
-
+# DB=Sequel.connect(:adapter => 'postgres', :host => 'localhost', :database => 'stats_development', :user=>'postgres', :password=>'pingpong21')
 
 class NBAAlgorithm
 	public
