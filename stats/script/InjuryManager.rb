@@ -134,8 +134,10 @@ class InjuryManager
 		# Output:
 		# =>  None
 		def buildInjuriesList
-			#doc = Nokogiri::HTML(open('http://www.rotoworld.com/teams/injuries/nba/all/'))
-			doc = Nokogiri::HTML(open('output.html'))
+			# TODO: Read from Database.
+
+			doc = Nokogiri::HTML(open('http://www.rotoworld.com/teams/injuries/nba/all/'))
+			#doc = Nokogiri::HTML(open('output.html'))
 
 			injuries_html = doc.css('div#cp1_pnlInjuries').css('div.pb')
 

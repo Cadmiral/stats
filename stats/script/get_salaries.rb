@@ -5,7 +5,7 @@ require 'open-uri'
 require 'pg'
 require 'sequel'
 
-DB=Sequel.connect(:adapter => 'postgres', :host => 'localhost', :database => 'stats_development')
+DB=Sequel.connect(:adapter => 'postgres', :host => 'localhost', :database => 'stats_development', :user=>'postgres', :password=>'pingpong21')
 
 begin
 	doc = Nokogiri::HTML(open('https://www.numberfire.com/nba/fantasy/fantasy-basketball-projections'))
