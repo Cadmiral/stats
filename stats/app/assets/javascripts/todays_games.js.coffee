@@ -1,37 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<link rel="stylesheet" href="/assets/theme.jui.css">
-	<link rel="stylesheet" href="/assets/jquery-ui.css">
-	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script> 
-	<script type="text/javascript" src="/assets/jquery.tablesorter.js"></script> 
+# Place all the behaviors and hooks related to the matching controller here.
+# All this logic will automatically be available in application.js.
+# You can use CoffeeScript in this file: http://coffeescript.org/
 
-	  <title>Stats</title>
 
-	<SCRIPT LANGUAGE="Javascript">
-	<!-- 
-
-	// Array of day names
-	var dayNames = new Array("Sunday","Monday","Tuesday","Wednesday",
-	        "Thursday","Friday","Saturday");
-
-	// Array of month Names
-	var monthNames = new Array(
-	"January","February","March","April","May","June","July",
-	"August","September","October","November","December");
-
-	var now = new Date();
-	document.write(dayNames[now.getDay()] + ", " + 
-	monthNames[now.getMonth()] + " " + 
-	now.getDate() + ", " + now.getFullYear());
-
-	// -->
-	</SCRIPT>
-
-<script>
 $(document).ready(function() {
 
+
+
   // call the tablesorter plugin and apply the ui theme widget
+ 
+
 
   $("#todays_games").tablesorter(
   	{sortList: [[0,0], [1,0]],
@@ -78,12 +56,3 @@ $(document).ready(function() {
   });
 
 });
-</script>
-
-</head>
-<body>
-
-<%= yield %>
-
-</body>
-</html>

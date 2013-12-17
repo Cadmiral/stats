@@ -1,0 +1,47 @@
+
+<!--<body style="background-color:black;color:white;link:white;">
+-->
+
+<h1 align="center">Today's Game</h1>
+
+
+<table id="todays_games" class="tablesorter" border="4" cellpadding="7" align="left"  rules="rows">
+  <thead>
+
+    <tr align="left"> 
+      <th>Name</th>
+      <th>Pos</th>
+      <th>Team</th>
+      <th>Opp</th>
+      <th>Avg fd Pts</th>
+      <th>Salary</th>
+      <th>Injury Date</th>
+      <th>Injury</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @todays_games.each do |todays_game| %>
+      <tr>
+        <td><%= todays_game.player_name %></td>
+        <td><%= todays_game.pos %></td>
+        <td><%= todays_game.team_name %></td>
+        <td><%= todays_game.opponent %></td>
+        <td><%= todays_game.avg_fd_points %></td>
+        <td><%= todays_game.salary %></td>
+        <td><%= todays_game.injury_date %></td> 
+        <td><%= todays_game.injury %></td>        
+        <td><%= todays_game.notes %></td>        
+        <!--<td><%= link_to 'Show', todays_game %></td>
+      -->
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+
+<br>
+
+<!--<%= link_to 'New Todays game', new_todays_game_path %>
+-->

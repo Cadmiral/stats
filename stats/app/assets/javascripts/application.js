@@ -14,3 +14,11 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require_tree .
+
+<script>
+$(document).ready(function() 
+    { 
+        $("#todays_games").tablesorter(); 
+    } 
+); 
+</script>  

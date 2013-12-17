@@ -1,0 +1,25 @@
+<h1>Listing boxscores</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @boxscores.each do |boxscore| %>
+      <tr>
+        <td><%= link_to 'Show', boxscore %></td>
+        <td><%= link_to 'Edit', edit_boxscore_path(boxscore) %></td>
+        <td><%= link_to 'Destroy', boxscore, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Boxscore', new_boxscore_path %>
