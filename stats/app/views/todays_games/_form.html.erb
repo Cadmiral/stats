@@ -1,0 +1,16 @@
+<%= form_for(@todays_game) do |f| %>
+  <% if @todays_game.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@todays_game.errors.count, "error") %> prohibited this todays_game from being saved:</h2>
+
+      <ul>
+      <% @todays_game.errors.full_messages.each do |msg| %>
+        <li><%= msg "Hello There!"%></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+  </div>
+<% end %>

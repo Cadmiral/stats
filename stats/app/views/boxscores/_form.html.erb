@@ -1,0 +1,17 @@
+<%= form_for(@boxscore) do |f| %>
+  <% if @boxscore.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@boxscore.errors.count, "error") %> prohibited this boxscore from being saved:</h2>
+
+      <ul>
+      <% @boxscore.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
