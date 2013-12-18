@@ -7,8 +7,10 @@ require 'open-uri'
 # where we are getting our Injury Info.
 INJURY_URL = 'http://www.rotoworld.com/teams/injuries/nba/all/'
 
-# Setup DB.
-# DB=Sequel.connect(:adapter => 'postgres', :host => 'localhost', :database => 'stats_development', :user=>'postgres', :password=>'pingpong21')
+unless defined? DB
+	# Setup DB Connector.
+	DB=Sequel.connect(:adapter => 'postgres', :host => '174.129.141.105', :database => 'stats_development', :user=>'postgres', :password=>'pingpong21')
+end
 
 class BuildNbaInjuryList
 	def initialize
@@ -58,10 +60,8 @@ class BuildNbaInjuryList
 
 				# Injured Body Part.
 				xinjury = playerListPerTeam[teamIndex].css('td')[12+playerIndex*7].text
-
 				#Insert Scraped and Parsed Data Into DB table.
 				DB << "INSERT INTO injury_list (name, date, team_name, injury, notes, status) VALUES ('#{xname}', '#{xdate}', '#{xteamName}', '#{xinjury}', '#{xdetails}', '#{xstatus}')"
-
 			end
 		end
 	end

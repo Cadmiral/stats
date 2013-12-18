@@ -2,6 +2,10 @@
 
 class Utilities
 
+	def initialize
+		puts "Initialize Utilities..."
+	end
+
 	def getTeamAbbr(teamName_string)
 		teamAbbrList =
 		{
@@ -39,16 +43,5 @@ class Utilities
 
         return teamAbbrList[teamName_string]
 	end
-
-end
-
-begin
-	util = Utilities.new
-	if(util.getTeamAbbr("Boba"))
-		puts "FOUND"
-	else
-		puts "NOT FOUND"
-	end
-
 
 end

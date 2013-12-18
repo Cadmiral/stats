@@ -1,3 +1,4 @@
+#!/usr/bin/ruby2.0.0
 require 'pg'
 require 'sequel'
 require 'nokogiri'
