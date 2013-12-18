@@ -56,7 +56,7 @@ begin
 		xdate = entry_dict['date']
 
 		# Update the "todays_game" table in the Database
-		DB << "UPDATE todays_game SET salary = #{xsalary} WHERE todays_game.player_name = '#{xname}';"
+		DB << "UPDATE todays_games SET salary = #{xsalary} WHERE todays_games.player_name = '#{xname}';"
 	end
 
 
