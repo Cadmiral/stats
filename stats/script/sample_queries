@@ -3,20 +3,28 @@ run create_table.rb
 run get_salaries.rb
 run these two queries in DB:
 
+
+
+
+UPDATE todays_games SET projected_fd_points = round((salary/1000*5),2); UPDATE todays_games SET plus_minus_percentage = round((avg_fd_points/projected_fd_points),2); DELETE FROM todays_game WHERE salary=0;
+
+_____________
+
+
+
+
 To get $ per Pts:
 
-UPDATE todays_game SET dollar_per_point = round((salary/avg_fd_points),2);
+UPDATE todays_games SET dollar_per_point = round((salary/avg_fd_points),2);
 
 _____________
 
 
-select * from todays_game where pos='SF' AND avg_fd_points > 20 ORDER BY dollar_per_point;
+select * from todays_games where pos='SF' AND avg_fd_points > 20 ORDER BY dollar_per_point;
 
 
 _____________
 
-alter table add 
-update todays_game with injury notes and report
 
 alter table todays_game add column injury VARCHAR(500), add column notes VARCHAR(500);
 update todays_game set (injury, notes) values (injury, notes from injury_list where todays_game.player_name = injury_list.player_name);
@@ -32,4 +40,17 @@ select player_name, date, avg(fd_points) over (PARTITION BY player_name order by
 _____________
 AVG FD_POINTS from last 3 games of all players playing today:
 
-select player_name, date, avg(fd_points) over (PARTITION BY player_name order by date rows between 2 preceding and current row) AS avg_fd_points from boxscore order by date desc limit (select count(*) from todays_game);
+select player_name, date, avg(fd_points) over (PARTITION BY player_name order by date rows between 2 preceding and current row) AS avg_fd_points from boxscore order by date desc limit (select count(*) from players);
+
+
+_____________
+
+SELECT avg(boxscores.fd_points) AS pts_given_to_position
+from boxscores INNER JOIN players on players.player_name=boxscores.player_name 
+where players.pos='PG' AND boxscores.opponent='OKC';
+
+
+
+
+
+

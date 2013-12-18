@@ -40,7 +40,7 @@ class CreateTable
         DB << "UPDATE players SET pos='SF', team_name='SAC' WHERE player_name='Derrick Williams'; UPDATE players SET pos='PF', team_name='MIN' WHERE player_name='Luc MbahaMoute'; UPDATE players SET avg_fd_points = (points+(rebounds*1.2)+(assists+1.5)+(blocks*2)+(steals*2)+(turnovers*-1))"
       end
     end
-    create_player_table
+    # create_player_table
 
 
     def self.create_boxscores_table
@@ -84,15 +84,7 @@ class CreateTable
     end
     # create_schedule_table
 
-    def self.create_todays_game_table
-        DB << "DROP TABLE IF EXISTS todays_games" << "SELECT schedule.date, players.player_name, players.pos, players.team_name, players.avg_fd_points INTO todays_games FROM players, schedule WHERE schedule.date = current_date AND (players.team_name=schedule.team_name OR schedule.opponent=players.team_name) ORDER BY players.avg_fd_points DESC;"
-        DB << "ALTER TABLE todays_games ADD COLUMN opponent VARCHAR(32), ADD COLUMN salary INTEGER, ADD COLUMN dollar_per_point DECIMAL, ADD COLUMN injury_date DATE, ADD COLUMN injury VARCHAR(500), ADD COLUMN notes VARCHAR(500), ADD PRIMARY KEY (player_name)"
 
-        #update todays_game table with data from other tables
-        DB << "UPDATE todays_games SET opponent=schedule.team_name FROM schedule WHERE todays_games.team_name = schedule.opponent AND todays_games.date=schedule.date"
-        DB << "UPDATE todays_games SET opponent=schedule.opponent FROM schedule WHERE todays_games.team_name = schedule.team_name AND todays_games.date=schedule.date"
-    end
-    create_todays_game_table
 
 
     def self.create_injury_list_table
@@ -120,7 +112,7 @@ class CreateTable
 
         end
     end
-    create_injury_list_table
+    # create_injury_list_table
 
 
     def self.update_salary
@@ -143,11 +135,24 @@ class CreateTable
 
 
     def self.create_salary_archive_table
-        DB << "DELETE FROM todays_game WHERE salary=0"
-        DB << "CREATE TABLE IF NOT EXISTS salary_archive (date DATE, player_name VARCHAR(32), pos VARCHAR (32), team_name VARCHAR (32), opponent VARCHAR(32), avg_fd_points DECIMAL, salary INTEGER, dollar_per_point DECIMAL)" 
-        DB << "INSERT INTO salary_archive (date, player_name, pos, team_name, opponent, avg_fd_points, salary, dollar_per_point) SELECT date, player_name, pos, team_name, opponent, avg_fd_points, salary, dollar_per_point FROM todays_game WHERE date = current_date"
+        DB << "DELETE FROM todays_games WHERE salary=0"
+        DB << "CREATE TABLE IF NOT EXISTS salary_archive (date DATE, player_name VARCHAR(32), pos VARCHAR (32), team_name VARCHAR (32), opponent VARCHAR(32), avg_fd_points DECIMAL, salary INTEGER, projected_fd_points DECIMAL)" 
+        DB << "INSERT INTO salary_archive (date, player_name, pos, team_name, opponent, avg_fd_points, salary, projected_fd_points) SELECT date, player_name, pos, team_name, opponent, avg_fd_points, salary, projected_fd_points FROM todays_game WHERE date = current_date"
     end
     # update_todays_game_table
+
+    def self.create_todays_game_table
+        DB << "DROP TABLE IF EXISTS todays_games" << "SELECT schedule.date, players.player_name, players.pos, players.team_name, players.avg_fd_points INTO todays_games FROM players, schedule WHERE schedule.date = current_date AND (players.team_name=schedule.team_name OR schedule.opponent=players.team_name) ORDER BY players.avg_fd_points DESC;"
+        DB << "ALTER TABLE todays_games ADD COLUMN opponent VARCHAR(32), ADD COLUMN salary DECIMAL, ADD COLUMN projected_fd_points DECIMAL, ADD COLUMN plus_minus_percentage DECIMAL, ADD COLUMN pos_advantage DECIMAL, ADD COLUMN injury_date DATE, ADD COLUMN injury VARCHAR(500), ADD COLUMN notes VARCHAR(500), ADD PRIMARY KEY (player_name)"
+
+        #update todays_game table with data from other tables
+        DB << "UPDATE todays_games SET opponent=schedule.team_name FROM schedule WHERE todays_games.team_name = schedule.opponent AND todays_games.date=schedule.date"
+        DB << "UPDATE todays_games SET opponent=schedule.opponent FROM schedule WHERE todays_games.team_name = schedule.team_name AND todays_games.date=schedule.date"
+        DB << "DELETE FROM todays_games WHERE salary=0; UPDATE todays_games SET projected_fd_points = round((salary/1000*5),2); UPDATE todays_games SET plus_minus_percentage = round((avg_fd_points/projected_fd_points),2);"
+
+    end
+    create_todays_game_table
+
 
 end
 
