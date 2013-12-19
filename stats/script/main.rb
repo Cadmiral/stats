@@ -5,16 +5,21 @@ require_relative 'AlgorithmManager'
 require_relative 'BuildNbaBoxScore'
 require_relative 'BuildNbaInjuryList'
 require_relative 'SalaryHistoryScraper'
+require_relative 'TodaysGameScraper'
+require_relative 'TodaysSalaryScraper'
+
 
 unless defined? DB
 	# Setup DB Connector.
+	puts " main.rb: Define DB Connector"
 	DB=Sequel.connect(:adapter => 'postgres', :host => '174.129.141.105', :database => 'stats_development', :user=>'postgres', :password=>'pingpong21')
 end
 
-# Filename to keep track of when we last ran the
-# script to get the boxscore.  (Script takes 5 min)
-LASTUPDATE_FILENAME = "lastupdated.txt"
-
+unless defined? LASTUPDATE_FILENAME
+	# Filename to keep track of when we last ran the
+	# script to get the boxscore.  (Script takes 5 min)
+	LASTUPDATE_FILENAME = "lastupdated.txt"
+end
 
 # Determine if you need to run the 5 minute update script.
 # Return Boolean.
@@ -108,20 +113,32 @@ begin
 	# end
 	}
 
-	if(ARGV[0] == '--boxscore' || ARGV[0] == '--all')
-		BuildNbaBoxScore.new
+	if(ARGV.include?('--force_update'))
+		# Blank the update log file.
+		file = File.open(LASTUPDATE_FILENAME, 'w')
+		file.write("{}")
+		file.close
 	end
 
-	if(ARGV[0] == '--salary_history' || ARGV[0] == '--all')
+	if(ARGV.include?('--boxscore') || ARGV.include?('--all'))
+		BuildNbaBoxScore.new
 		SalaryHistoryScraper.new
 	end
 
-	if(ARGV[0] == '--injuries' || ARGV[0] == '--injury' || ARGV[0] == '--all')
+	if(ARGV.include?('--salary_history') || ARGV.include?('--all'))
+		SalaryHistoryScraper.new
+	end
+
+	if(ARGV.include?('--injuries') || ARGV.include?('--all'))
 		BuildNbaInjuryList.new
 	end
 
-	#algoManager = AlgorithmManager.new
-	#algoManager.runAlgorithm1
-#	algoManager.runAlgorithm2
+	obj = TodaysSalaryScraper.new
+	obj.scrapeAndPopulate
+	#obj.forceCreateTodaysGameTable
+
+	todaysGame = TodaysGameScraper.new
+	todaysGame.scrapeAndPopulate
+
 end
 

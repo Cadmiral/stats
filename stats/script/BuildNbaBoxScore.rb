@@ -8,10 +8,10 @@ require 'open-uri'
 class BuildNbaBoxScore
 
     def initialize
-        puts "Creating table 'boxscore'..."
+        puts "Creating table 'boxscores'..."
 
         #create data file
-        DB << "DROP TABLE IF EXISTS boxscore" << "CREATE TABLE boxscore (date DATE,
+        DB << "DROP TABLE IF EXISTS boxscores" << "CREATE TABLE boxscores (date DATE,
                                                                         team_name VARCHAR (32),
                                                                         player_name VARCHAR(32),
                                                                         player_id INT,
@@ -112,7 +112,7 @@ class BuildNbaBoxScore
                 end
 
                 # Insert Entry
-                DB << "INSERT INTO boxscore (date,
+                DB << "INSERT INTO boxscores (date,
                                             team_name,
                                             player_name,
                                             home,

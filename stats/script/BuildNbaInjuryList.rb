@@ -8,15 +8,16 @@ require 'open-uri'
 INJURY_URL = 'http://www.rotoworld.com/teams/injuries/nba/all/'
 
 unless defined? DB
+	puts " BuildNbaInjuryList.rb: Define DB Connector"
 	# Setup DB Connector.
 	DB=Sequel.connect(:adapter => 'postgres', :host => '174.129.141.105', :database => 'stats_development', :user=>'postgres', :password=>'pingpong21')
 end
 
 class BuildNbaInjuryList
 	def initialize
-		puts "Creating table 'injury_list'..."
+		puts "\nBEGIN: Creating table 'injuries'..."
 		# Drop and Create DB Table in postgres.
-	    DB << "DROP TABLE IF EXISTS injury_list" << "CREATE TABLE injury_list (name VARCHAR (32), date DATE, team_name VARCHAR (32), injury VARCHAR(500), notes VARCHAR(500), status VARCHAR (100))"
+	    DB << "DROP TABLE IF EXISTS injuries" << "CREATE TABLE injuries (name VARCHAR (32), date DATE, team_name VARCHAR (32), injury VARCHAR(500), notes VARCHAR(500), status VARCHAR (100))"
 
 	    # Scrape the Injury Data.
 		doc = Nokogiri::HTML(open(INJURY_URL))
@@ -61,9 +62,10 @@ class BuildNbaInjuryList
 				# Injured Body Part.
 				xinjury = playerListPerTeam[teamIndex].css('td')[12+playerIndex*7].text
 				#Insert Scraped and Parsed Data Into DB table.
-				DB << "INSERT INTO injury_list (name, date, team_name, injury, notes, status) VALUES ('#{xname}', '#{xdate}', '#{xteamName}', '#{xinjury}', '#{xdetails}', '#{xstatus}')"
-			end
-		end
-	end
+				DB << "INSERT INTO injuries (name, date, team_name, injury, notes, status) VALUES ('#{xname}', '#{xdate}', '#{xteamName}', '#{xinjury}', '#{xdetails}', '#{xstatus}')"
+			end #end for loop (players)
+		end #end for loop (teams)
+		puts "DONE: Creating table 'injuries'..."
+	end # end initialize
 end # end of class
 
