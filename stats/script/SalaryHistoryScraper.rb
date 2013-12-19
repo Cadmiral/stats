@@ -8,7 +8,7 @@ require 'open-uri'
 
 class SalaryHistoryScraper
 	def initialize
-		puts "Adding salary history to boxscore..."
+		puts "Adding salary history to boxscores..."
 
 		startDate = "29-10-2013"
 		formated_date = Date.parse(startDate)
@@ -45,6 +45,7 @@ class SalaryHistoryScraper
 					last_name, first_name= player_name.split(',', 2)
 					player_name = first_name + ' ' + last_name
 
+					# Stupid custom name bullshit...
 					if(player_name == "Wes Johnson")
 						player_name = "Wesley Johnson"
 					end
@@ -54,8 +55,8 @@ class SalaryHistoryScraper
 					player_salary.sub!('$', '')
 					player_salary.sub!(',', '')
 
-					# Update boxscore database table
-					DB << "UPDATE boxscore SET salary = #{player_salary.to_i}
+					# Update boxscores database table
+					DB << "UPDATE boxscores SET salary = #{player_salary.to_i}
 											WHERE player_name = '#{player_name}'
 											AND date = '#{salary_date}';"
 				end
@@ -65,8 +66,8 @@ class SalaryHistoryScraper
 			formated_date = formated_date+1
 		end # End while
 
-		# Update boxscore database table
-		DB << "UPDATE boxscore SET salary = 0
+		# Update boxscores database table
+		DB << "UPDATE boxscores SET salary = 0
 								WHERE salary IS NULL;"
 		puts "DONE"
 	end

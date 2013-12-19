@@ -44,4 +44,18 @@ class Utilities
         return teamAbbrList[teamName_string]
 	end
 
+	def getFanDuelPoints(points, rebounds, assists, blocks, steals, turnovers)
+		# 3-pt FG = 3pts
+		# 2-pt FG = 2pts
+		# FT = 1pt
+		# Rebound = 1.2pts
+		# Assist = 1.5pts
+		# Block = 2pts
+		# Steal = 2pts
+		# Turnover = -1pt
+		fantasy_points = points + rebounds*1.2 +  assists*1.5 + blocks*2 + steals*2 - turnovers
+
+		return fantasy_points
+	end
+
 end
