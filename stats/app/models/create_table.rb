@@ -40,19 +40,20 @@ class CreateTable
         DB << "UPDATE players SET pos='SF', team_name='SAC' WHERE player_name='Derrick Williams'; UPDATE players SET pos='PF', team_name='MIN' WHERE player_name='Luc MbahaMoute'; UPDATE players SET avg_fd_points = (points+(rebounds*1.2)+(assists+1.5)+(blocks*2)+(steals*2)+(turnovers*-1))"
       end
     end
-    # create_player_table
+    create_player_table
 
 
     def self.create_boxscores_table
         tables=eval(File.read(File.expand_path("../../../script/player_boxscore", __FILE__)))
-        DB << "DROP TABLE IF EXISTS boxscores" << "CREATE TABLE boxscores (id SERIAL PRIMARY KEY, date DATE, team_name VARCHAR (32), player_name VARCHAR(32), player_id INT, home VARCHAR(32), opponent VARCHAR(32), mins VARCHAR(32), points INT, fg_attempts INT, fg_percent DECIMAL, rebounds INT, assists INT, steals INT, blocks INT, turnovers INT, fouls INT, salary INT, fd_points DECIMAL)" 
+        DB << "DROP TABLE IF EXISTS boxscores" << "CREATE TABLE boxscores (id SERIAL PRIMARY KEY, date DATE, team_name VARCHAR (32), player_name VARCHAR(32), player_id INT, pos VARCHAR(32), home VARCHAR(32), opponent VARCHAR(32), mins DECIMAL, points INT, fg_attempts INT, fg_percent DECIMAL, rebounds INT, assists INT, steals INT, blocks INT, turnovers INT, fouls INT, salary INT, fd_points DECIMAL)" 
         tables.each do |x|
           xname=x[:name]
           xdate=x[:date]
           xteam=x[:team]
           xhome=x[:home]
           xopponent=x[:opponent]
-          xmins=x[:mins]
+          mins=x[:mins]
+            xmins=mins.tr(":",".")
           xpoints=x[:points]
           xfg_attempts=x[:fg_attempts]
           xfg_percent=x[:fg_percent]
@@ -65,7 +66,7 @@ class CreateTable
           DB << "INSERT INTO boxscores (player_name, team_name, date, home, opponent, mins, points, fg_attempts, fg_percent, rebounds, assists, steals, blocks, turnovers, fouls) VALUES ('#{xname}', '#{xteam}', '#{xdate}', '#{xhome}', '#{xopponent}', '#{xmins}', '#{xpoints}', '#{xfg_attempts}', '#{xfg_percent}', '#{xrebounds}', '#{xassists}', '#{xsteals}', '#{xblocks}', '#{xturnovers}', '#{xfouls}')"
         end
         #UPDATE boxscore player_id to match TABLE player.player_id & UPDATE SUM of fd_points
-        DB << "UPDATE boxscores SET player_id = players.player_id FROM players where players.player_name = boxscores.player_name; UPDATE boxscores SET fd_points = (points+(rebounds*1.2)+(assists+1.5)+(blocks*2)+(steals*2)+(turnovers*-1))"
+        DB << "UPDATE boxscores SET player_id = players.player_id FROM players where players.player_name = boxscores.player_name; UPDATE boxscores SET pos=players.pos FROM players WHERE boxscores.player_name = players.player_name; UPDATE boxscores SET fd_points = (points+(rebounds*1.2)+(assists+1.5)+(blocks*2)+(steals*2)+(turnovers*-1))"
     end
     create_boxscores_table
 
@@ -82,7 +83,7 @@ class CreateTable
           DB << "INSERT INTO schedule (date, team_name, team_score, opponent, opponent_score) VALUES ('#{xdate}', '#{xteam}', '#{xteam_score}', '#{xopponent}', '#{xopponent_score}')"
         end
     end
-    # create_schedule_table
+    create_schedule_table
 
 
 
