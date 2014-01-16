@@ -8,7 +8,21 @@ class CreateTable
     def self.create_player_table
       player_avg_table=eval(File.read(File.expand_path("../../../script/player_avg", __FILE__)))
 
-      DB << "DROP TABLE IF EXISTS players" << "CREATE TABLE players (player_id SERIAL, player_name VARCHAR(32), pos VARCHAR(32), team_name VARCHAR(32), mins DECIMAL, points DECIMAL, rebounds DECIMAL, assists DECIMAL, steals DECIMAL, blocks DECIMAL, turnovers DECIMAL, avg_fd_points DECIMAL)" 
+      DB << "DROP TABLE IF EXISTS players; 
+            CREATE TABLE players 
+                (player_id SERIAL, 
+                player_name VARCHAR(32), 
+                pos VARCHAR(32), 
+                team_name VARCHAR(32), 
+                mins DECIMAL, 
+                points DECIMAL, 
+                rebounds DECIMAL, 
+                assists DECIMAL, 
+                steals DECIMAL, 
+                blocks DECIMAL, 
+                turnovers DECIMAL, 
+                avg_fd_points DECIMAL)" 
+
       player_avg_table.each do |x|
             xname=x[:name]
             if xname.chomp == ""
@@ -34,10 +48,28 @@ class CreateTable
             xsteals=x[:steals]
             xblocks=x[:blocks]
             xturnovers=x[:turnovers]
-            DB << "INSERT INTO players (player_name, pos, team_name, mins, points, rebounds, assists, steals, blocks, turnovers) VALUES ('#{first} #{last}', '#{xpos}', '#{xteam}', '#{xmins}', '#{xpoints}', '#{xrebounds}', '#{xassists}', '#{xsteals}', '#{xblocks}', '#{xturnovers}')"
-        end
-        #UPDATE these players POS and ADD team name & UPDATE SUM of avg_fd_points
-        DB << "UPDATE players SET pos='SF', team_name='SAC' WHERE player_name='Derrick Williams'; UPDATE players SET pos='PF', team_name='MIN' WHERE player_name='Luc MbahaMoute'; UPDATE players SET avg_fd_points = (points+(rebounds*1.2)+(assists+1.5)+(blocks*2)+(steals*2)+(turnovers*-1))"
+            DB << "INSERT INTO players 
+                    (player_name, pos, team_name, mins, points, rebounds, assists, steals, blocks, turnovers) 
+                    VALUES ('#{first} #{last}', '#{xpos}', '#{xteam}', '#{xmins}', '#{xpoints}', '#{xrebounds}', '#{xassists}', '#{xsteals}', '#{xblocks}', '#{xturnovers}')"
+      end
+
+      DB <<   "UPDATE players SET pos='SG' WHERE player_name='Chris DouglasRoberts'; 
+              UPDATE players SET team_name='GSW' WHERE player_name='Jordan Crawford';
+              UPDATE players SET team_name='TOR' WHERE player_name='Patrick Patterson';
+              UPDATE players SET team_name='MEM' WHERE player_name='Courtney Lee';
+              UPDATE players SET team_name='CLE' WHERE player_name='Luol Deng';
+              UPDATE players SET team_name='BOS' WHERE player_name='Jerryd Bayless';
+              UPDATE players SET team_name='SAC' WHERE player_name='Rudy Gay';
+              UPDATE players SET team_name='CHI' WHERE player_name='DJ Augustin';
+              UPDATE players SET team_name='TOR', pos='SF' WHERE player_name='John Salmons'; 
+              UPDATE players SET pos='PG', team_name='SAC' WHERE player_name='Greivis Vasquez'; 
+              UPDATE players SET team_name='SAC' WHERE player_name='Quincy Acy';
+              UPDATE players SET pos='SF', team_name='SAC' WHERE player_name='Derrick Williams'; 
+              UPDATE players SET pos='PF', team_name='MIN' WHERE player_name='Luc MbahaMoute'; 
+              UPDATE players SET pos='PG' WHERE player_name='Kendall Marshall'; 
+              UPDATE players SET pos='PF' WHERE player_name='Miles Plumlee'; 
+              UPDATE players SET pos='SG' WHERE player_name='Goran Dragic'; 
+              UPDATE players SET avg_fd_points = (points+(rebounds*1.2)+(assists+1.5)+(blocks*2)+(steals*2)+(turnovers*-1))"
       end
     end
     create_player_table
@@ -45,7 +77,28 @@ class CreateTable
 
     def self.create_boxscores_table
         tables=eval(File.read(File.expand_path("../../../script/player_boxscore", __FILE__)))
-        DB << "DROP TABLE IF EXISTS boxscores" << "CREATE TABLE boxscores (id SERIAL PRIMARY KEY, date DATE, team_name VARCHAR (32), player_name VARCHAR(32), player_id INT, pos VARCHAR(32), home VARCHAR(32), opponent VARCHAR(32), mins DECIMAL, points INT, fg_attempts INT, fg_percent DECIMAL, rebounds INT, assists INT, steals INT, blocks INT, turnovers INT, fouls INT, salary INT, fd_points DECIMAL)" 
+        DB << "DROP TABLE IF EXISTS boxscores; 
+              CREATE TABLE boxscores 
+                (id SERIAL PRIMARY KEY, 
+                date DATE, 
+                team_name VARCHAR (32), 
+                player_name VARCHAR(32), 
+                player_id INT, 
+                pos VARCHAR(32), 
+                home VARCHAR(32), 
+                opponent VARCHAR(32), 
+                mins DECIMAL, 
+                points INT, 
+                fg_attempts INT, 
+                fg_percent DECIMAL, 
+                rebounds INT, 
+                assists INT, 
+                steals INT, 
+                blocks INT, 
+                turnovers INT, 
+                fouls INT, 
+                salary INT, 
+                fd_points DECIMAL)" 
         tables.each do |x|
           xname=x[:name]
           xdate=x[:date]
@@ -63,34 +116,108 @@ class CreateTable
           xblocks=x[:blocks]
           xturnovers=x[:turnovers]
           xfouls=x[:fouls]
-          DB << "INSERT INTO boxscores (player_name, team_name, date, home, opponent, mins, points, fg_attempts, fg_percent, rebounds, assists, steals, blocks, turnovers, fouls) VALUES ('#{xname}', '#{xteam}', '#{xdate}', '#{xhome}', '#{xopponent}', '#{xmins}', '#{xpoints}', '#{xfg_attempts}', '#{xfg_percent}', '#{xrebounds}', '#{xassists}', '#{xsteals}', '#{xblocks}', '#{xturnovers}', '#{xfouls}')"
+          DB << "INSERT INTO boxscores 
+          (player_name, team_name, date, home, opponent, mins, points, fg_attempts, fg_percent, rebounds, assists, steals, blocks, turnovers, fouls) 
+          VALUES ('#{xname}', '#{xteam}', '#{xdate}', '#{xhome}', '#{xopponent}', '#{xmins}', '#{xpoints}', '#{xfg_attempts}', '#{xfg_percent}', '#{xrebounds}', '#{xassists}', '#{xsteals}', '#{xblocks}', '#{xturnovers}', '#{xfouls}')"      
         end
         #UPDATE boxscore player_id to match TABLE player.player_id & UPDATE SUM of fd_points
-        DB << "UPDATE boxscores SET player_id = players.player_id FROM players where players.player_name = boxscores.player_name; UPDATE boxscores SET pos=players.pos FROM players WHERE boxscores.player_name = players.player_name; UPDATE boxscores SET fd_points = (points+(rebounds*1.2)+(assists+1.5)+(blocks*2)+(steals*2)+(turnovers*-1))"
+        DB << "UPDATE boxscores 
+              SET player_id = players.player_id 
+              FROM players 
+              WHERE players.player_name = boxscores.player_name; 
+
+              UPDATE boxscores 
+              SET pos=players.pos 
+              FROM players 
+              WHERE boxscores.player_name = players.player_name; 
+
+              UPDATE boxscores 
+              SET fd_points = (points+(rebounds*1.2)+(assists+1.5)+(blocks*2)+(steals*2)+(turnovers*-1))"
     end
     create_boxscores_table
 
 
     def self.create_schedule_table
         tables=eval(File.read(File.expand_path("../../../script/nba_schedule", __FILE__)))
-        DB << "DROP TABLE IF EXISTS schedule" << "CREATE TABLE schedule (date DATE, team_name VARCHAR (32), team_score INT, opponent VARCHAR(32), opponent_score INT)"
+        DB << "DROP TABLE IF EXISTS schedule;
+              CREATE TABLE schedule 
+              (date DATE, team_name VARCHAR (32), team_score INT, opponent VARCHAR(32), opponent_score INT)"
         tables.each do |x|
           xdate=x[:date]
           xteam=x[:team]
           xteam_score=x[:team_score]
           xopponent=x[:opponent]
           xopponent_score=x[:opponent_score]
-          DB << "INSERT INTO schedule (date, team_name, team_score, opponent, opponent_score) VALUES ('#{xdate}', '#{xteam}', '#{xteam_score}', '#{xopponent}', '#{xopponent_score}')"
+          DB << "INSERT INTO schedule 
+          (date, team_name, team_score, opponent, opponent_score) 
+          VALUES ('#{xdate}', '#{xteam}', '#{xteam_score}', '#{xopponent}', '#{xopponent_score}')"
         end
     end
     create_schedule_table
 
 
+    def self.create_todays_game_table
+        DB << "DROP TABLE IF EXISTS todays_games;
+              SELECT schedule.date, players.player_name, players.pos, players.team_name, players.avg_fd_points 
+                INTO todays_games 
+                FROM players, schedule 
+                WHERE schedule.date = current_date 
+                AND (players.team_name=schedule.team_name OR schedule.opponent=players.team_name) 
+                ORDER BY players.avg_fd_points DESC;
+              
+              ALTER TABLE todays_games 
+                ADD COLUMN fd_points_vs_opp DECIMAL, 
+                ADD COLUMN opponent VARCHAR(32), 
+                ADD COLUMN salary DECIMAL, 
+                ADD COLUMN projected_fd_points DECIMAL, 
+                ADD COLUMN plus_minus_percentage DECIMAL, 
+                ADD COLUMN pos_advantage DECIMAL, 
+                ADD COLUMN injury_date DATE, 
+                ADD COLUMN injury VARCHAR(500), 
+                ADD COLUMN notes VARCHAR(500), 
+                ADD PRIMARY KEY (player_name);
+
+              UPDATE todays_games 
+                SET opponent=schedule.team_name 
+                FROM schedule 
+                WHERE todays_games.team_name = schedule.opponent 
+                AND todays_games.date=schedule.date;
+
+              UPDATE todays_games 
+                SET opponent=schedule.opponent 
+                FROM schedule 
+                WHERE todays_games.team_name = schedule.team_name 
+                AND todays_games.date=schedule.date;
+
+              UPDATE todays_games
+                SET fd_points_vs_opp =
+                  (CASE
+                  WHEN todays_games.pos = 'PG' THEN opponent_stats_by_pos.pg_avg_fd
+                  WHEN todays_games.pos = 'SG' THEN opponent_stats_by_pos.sg_avg_fd
+                  WHEN todays_games.pos = 'SF' THEN opponent_stats_by_pos.sf_avg_fd
+                  WHEN todays_games.pos = 'PF' THEN opponent_stats_by_pos.pf_avg_fd
+                  WHEN todays_games.pos = 'C' THEN opponent_stats_by_pos.c_avg_fd
+                  END)
+                FROM opponent_stats_by_pos
+                WHERE opponent_stats_by_pos.team_name=todays_games.opponent;"
+    end
+    create_todays_game_table
+
+
+
+    def self.get_salaries
+      require_relative "../../script/get_player_salaries"
+    end
+    get_salaries
+
 
 
     def self.create_injury_list_table
         injury_list=eval(File.read(File.expand_path("../../../script/injury_list", __FILE__)))
-        DB << "DROP TABLE IF EXISTS injury_list" << "CREATE TABLE injury_list (name VARCHAR (32), date DATE, team_name VARCHAR (32), injury VARCHAR(500), notes VARCHAR(500))"
+        DB << "DROP TABLE IF EXISTS injury_list;
+              CREATE TABLE injury_list 
+                (name VARCHAR (32), date DATE, team_name VARCHAR (32), injury VARCHAR(500), notes VARCHAR(500))"
+        
         injury_list.each do |x|
           xname=x[:name]
             player = xname.split(/\s+/,2)
@@ -108,54 +235,303 @@ class CreateTable
           xteam=x[:team]
           xinjury=x[:injury]
           xnotes=x[:notes]
-          DB << "INSERT INTO injury_list (name, date, team_name, injury, notes) VALUES ('#{first} #{last}', '#{xdate}', '#{xteam}', '#{xinjury}', '#{xnotes}')"
-          DB << "UPDATE todays_games SET injury=(select injury_list.injury from injury_list where injury_list.name=todays_games.player_name), notes=(select injury_list.notes from injury_list where injury_list.name=todays_games.player_name), injury_date=(select injury_list.date from injury_list where injury_list.name=todays_games.player_name)"
+          DB << "INSERT INTO injury_list 
+                  (name, date, team_name, injury, notes) 
+                  VALUES ('#{first} #{last}', '#{xdate}', '#{xteam}', '#{xinjury}', '#{xnotes}');
+                
+                UPDATE todays_games 
+                SET injury=(SELECT 
+                    injury_list.injury 
+                    FROM injury_list 
+                    WHERE injury_list.name=todays_games.player_name), 
+                notes=(SELECT 
+                    injury_list.notes 
+                    FROM injury_list 
+                    WHERE injury_list.name=todays_games.player_name), 
+                injury_date=(SELECT 
+                    injury_list.date 
+                    FROM injury_list 
+                    WHERE injury_list.name=todays_games.player_name);
+                
+                DELETE FROM todays_games WHERE salary=0; 
 
+                DELETE FROM todays_games WHERE salary IS NULL;
+
+                UPDATE todays_games 
+                SET projected_fd_points = round((salary/1000*5),2); 
+
+                UPDATE todays_games 
+                SET plus_minus_percentage = round((avg_fd_points/projected_fd_points),2);"
         end
     end
-    # create_injury_list_table
+    create_injury_list_table
 
 
-    def self.update_salary
-        player_salary=File.read(File.expand_path("../../../script/player_daily_salaries", __FILE__))
-        
-        get_salary = player_salary.split(/\n/)
-        get_salary.each do |a|
-        if match = a.match(/\s*(\w+)\s+(\w+)\s+(\w+)\s*/)
-        salary, first, last1= match.captures
-        end
-        # last="#{last1}#{last2}"
-        # puts last
-        puts last1
-        # puts first
-        #   xsalary=x[:salary]
-        #   DB << "UPDATE todays_game SET salary = #{xsalary} WHERE player_name = '#{xname}'"
-        end
+    def self.opponent_stats_by_pos
+        DB << "DROP TABLE IF EXISTS opponent_stats_by_pos;
+          CREATE TABLE opponent_stats_by_pos (
+            team_name VARCHAR(32),
+            pg_avg_fd DECIMAL, sg_avg_fd DECIMAL, sf_avg_fd DECIMAL, pf_avg_fd DECIMAL, c_avg_fd DECIMAL, 
+            pg_points DECIMAL, pg_rebounds DECIMAL, pg_assists DECIMAL, pg_steals DECIMAL, pg_blocks DECIMAL, pg_turnovers DECIMAL, 
+            sg_points DECIMAL, sg_rebounds DECIMAL, sg_assists DECIMAL, sg_steals DECIMAL, sg_blocks DECIMAL, sg_turnovers DECIMAL, 
+            sf_points DECIMAL, sf_rebounds DECIMAL, sf_assists DECIMAL, sf_steals DECIMAL, sf_blocks DECIMAL, sf_turnovers DECIMAL, 
+            pf_points DECIMAL, pf_rebounds DECIMAL, pf_assists DECIMAL, pf_steals DECIMAL, pf_blocks DECIMAL, pf_turnovers DECIMAL, 
+            c_points DECIMAL, c_rebounds DECIMAL, c_assists DECIMAL, c_steals DECIMAL, c_blocks DECIMAL, c_turnovers DECIMAL);
+
+            INSERT INTO opponent_stats_by_pos (team_name) SELECT DISTINCT players.team_name
+            FROM players
+            WHERE players.team_name!='';
+
+            UPDATE opponent_stats_by_pos 
+            SET pg_avg_fd=(SELECT ROUND(AVG(boxscores.fd_points),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='PG' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET sg_avg_fd=(SELECT ROUND(AVG(boxscores.fd_points),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='SG' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET sf_avg_fd=(SELECT ROUND(AVG(boxscores.fd_points),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='SF' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET pf_avg_fd=(SELECT ROUND(AVG(boxscores.fd_points),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='PF' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET c_avg_fd=(SELECT ROUND(AVG(boxscores.fd_points),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='C' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET pg_points=(SELECT ROUND(AVG(boxscores.points),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='PG' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET sg_points=(SELECT ROUND(AVG(boxscores.points),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='SG' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET sf_points=(SELECT ROUND(AVG(boxscores.points),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='SF' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET pf_points=(SELECT ROUND(AVG(boxscores.points),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='PF' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET c_points=(SELECT ROUND(AVG(boxscores.points),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='C' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET pg_rebounds=(SELECT ROUND(AVG(boxscores.rebounds),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='PG' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET sg_rebounds=(SELECT ROUND(AVG(boxscores.rebounds),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='SG' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET sf_rebounds=(SELECT ROUND(AVG(boxscores.rebounds),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='SF' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET pf_rebounds=(SELECT ROUND(AVG(boxscores.rebounds),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='PF' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET c_rebounds=(SELECT ROUND(AVG(boxscores.rebounds),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='C' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET pg_assists=(SELECT ROUND(AVG(boxscores.assists),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='PG' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET sg_assists=(SELECT ROUND(AVG(boxscores.assists),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='SG' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET sf_assists=(SELECT ROUND(AVG(boxscores.assists),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='SF' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET pf_assists=(SELECT ROUND(AVG(boxscores.assists),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='PF' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET c_assists=(SELECT ROUND(AVG(boxscores.assists),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='C' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+
+            UPDATE opponent_stats_by_pos 
+            SET pg_steals=(SELECT ROUND(AVG(boxscores.steals),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='PG' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET sg_steals=(SELECT ROUND(AVG(boxscores.steals),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='SG' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET sf_steals=(SELECT ROUND(AVG(boxscores.steals),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='SF' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET pf_steals=(SELECT ROUND(AVG(boxscores.steals),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='PF' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET c_steals=(SELECT ROUND(AVG(boxscores.steals),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='C' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET pg_blocks=(SELECT ROUND(AVG(boxscores.blocks),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='PG' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET sg_blocks=(SELECT ROUND(AVG(boxscores.blocks),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='SG' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET sf_blocks=(SELECT ROUND(AVG(boxscores.blocks),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='SF' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET pf_blocks=(SELECT ROUND(AVG(boxscores.blocks),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='PF' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET c_blocks=(SELECT ROUND(AVG(boxscores.blocks),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='C' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET pg_turnovers=(SELECT ROUND(AVG(boxscores.turnovers),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='PG' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET sg_turnovers=(SELECT ROUND(AVG(boxscores.turnovers),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='SG' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET sf_turnovers=(SELECT ROUND(AVG(boxscores.turnovers),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='SF' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET pf_turnovers=(SELECT ROUND(AVG(boxscores.turnovers),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='PF' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');
+
+            UPDATE opponent_stats_by_pos 
+            SET c_turnovers=(SELECT ROUND(AVG(boxscores.turnovers),2) 
+            FROM boxscores 
+            WHERE boxscores.pos='C' 
+            AND opponent_stats_by_pos.team_name=boxscores.opponent 
+            AND boxscores.mins>='10');"
     end
-    # update_salary
-
-
-    def self.create_salary_archive_table
-        DB << "DELETE FROM todays_games WHERE salary=0"
-        DB << "CREATE TABLE IF NOT EXISTS salary_archive (date DATE, player_name VARCHAR(32), pos VARCHAR (32), team_name VARCHAR (32), opponent VARCHAR(32), avg_fd_points DECIMAL, salary INTEGER, projected_fd_points DECIMAL)" 
-        DB << "INSERT INTO salary_archive (date, player_name, pos, team_name, opponent, avg_fd_points, salary, projected_fd_points) SELECT date, player_name, pos, team_name, opponent, avg_fd_points, salary, projected_fd_points FROM todays_game WHERE date = current_date"
-    end
-    # update_todays_game_table
-
-    def self.create_todays_game_table
-        DB << "DROP TABLE IF EXISTS todays_games" << "SELECT schedule.date, players.player_name, players.pos, players.team_name, players.avg_fd_points INTO todays_games FROM players, schedule WHERE schedule.date = current_date AND (players.team_name=schedule.team_name OR schedule.opponent=players.team_name) ORDER BY players.avg_fd_points DESC;"
-        DB << "ALTER TABLE todays_games ADD COLUMN opponent VARCHAR(32), ADD COLUMN salary DECIMAL, ADD COLUMN projected_fd_points DECIMAL, ADD COLUMN plus_minus_percentage DECIMAL, ADD COLUMN pos_advantage DECIMAL, ADD COLUMN injury_date DATE, ADD COLUMN injury VARCHAR(500), ADD COLUMN notes VARCHAR(500), ADD PRIMARY KEY (player_name)"
-
-        #update todays_game table with data from other tables
-        DB << "UPDATE todays_games SET opponent=schedule.team_name FROM schedule WHERE todays_games.team_name = schedule.opponent AND todays_games.date=schedule.date"
-        DB << "UPDATE todays_games SET opponent=schedule.opponent FROM schedule WHERE todays_games.team_name = schedule.team_name AND todays_games.date=schedule.date"
-        DB << "DELETE FROM todays_games WHERE salary=0; UPDATE todays_games SET projected_fd_points = round((salary/1000*5),2); UPDATE todays_games SET plus_minus_percentage = round((avg_fd_points/projected_fd_points),2);"
-
-    end
-    create_todays_game_table
-
+    opponent_stats_by_pos
 
 end
+
 
 
 
