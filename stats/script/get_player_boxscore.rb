@@ -26,7 +26,7 @@ class GetPlayerBoxscore
             end
 
         #get data from bball-refernce
-            doc = Nokogiri::HTML(open("http://www.basketball-reference.com/players/#{first_letter}/#{url_name}/gamelog/2014"))
+            doc = Nokogiri::HTML(open("http://www.basketball-reference.com/players/#{first_letter}/#{url_name}/gamelog/2015"))
             rows = doc.xpath('//table[@id="pgl_basic"]/tbody/tr') 
             details = rows.collect do |row|
               detail = {}
@@ -55,11 +55,12 @@ class GetPlayerBoxscore
 
         #remove unwanted empty rows
             details.each do |x|
-                xname=x[:date]
+                xname=x[:team]
                     if xname.chomp == ""
                     details.delete x
                 end
             end
+
 
         #add value into key :name
             details.each{|key| key[:name] = "#{first} #{last}"}
@@ -89,9 +90,9 @@ class GetPlayerBoxscore
 
         #remove unwanted array characters from file player_boxscore
         boxscore=File.read("player_boxscore")
-        create_boxscore=boxscore.gsub("][", ", ")
+        remove_bracket=boxscore.gsub("\"\"", "\"0\"").gsub("][", ", ").gsub(",\ ,\ ,", ",").gsub(",\ ,", ",")
         File.open("player_boxscore", "w") do |f|
-            f.write(create_boxscore)
+            f.write(remove_bracket)
         end
     end
 end

@@ -42,7 +42,7 @@ class GetInjuryReport
         when "Brooklyn Nets"
             key[:team] = "BKN"
         when "Charlotte Bobcats"
-            key[:team] = "CHA"        
+            key[:team] = "CHO"        
         when "Chicago Bulls"
             key[:team] = "CHI"
         when "Cleveland Cavaliers"

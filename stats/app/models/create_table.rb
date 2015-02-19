@@ -53,23 +53,33 @@ class CreateTable
                     VALUES ('#{first} #{last}', '#{xpos}', '#{xteam}', '#{xmins}', '#{xpoints}', '#{xrebounds}', '#{xassists}', '#{xsteals}', '#{xblocks}', '#{xturnovers}')"
       end
 
-      DB <<   "UPDATE players SET pos='SG' WHERE player_name='Chris DouglasRoberts'; 
-              UPDATE players SET team_name='GSW' WHERE player_name='Jordan Crawford';
-              UPDATE players SET team_name='TOR' WHERE player_name='Patrick Patterson';
-              UPDATE players SET team_name='MEM' WHERE player_name='Courtney Lee';
-              UPDATE players SET team_name='CLE' WHERE player_name='Luol Deng';
-              UPDATE players SET team_name='BOS' WHERE player_name='Jerryd Bayless';
-              UPDATE players SET team_name='SAC' WHERE player_name='Rudy Gay';
-              UPDATE players SET team_name='CHI' WHERE player_name='DJ Augustin';
-              UPDATE players SET team_name='TOR', pos='SF' WHERE player_name='John Salmons'; 
-              UPDATE players SET pos='PG', team_name='SAC' WHERE player_name='Greivis Vasquez'; 
-              UPDATE players SET team_name='SAC' WHERE player_name='Quincy Acy';
-              UPDATE players SET pos='SF', team_name='SAC' WHERE player_name='Derrick Williams'; 
-              UPDATE players SET pos='PF', team_name='MIN' WHERE player_name='Luc MbahaMoute'; 
-              UPDATE players SET pos='PG' WHERE player_name='Kendall Marshall'; 
-              UPDATE players SET pos='PF' WHERE player_name='Miles Plumlee'; 
-              UPDATE players SET pos='SG' WHERE player_name='Goran Dragic'; 
-              UPDATE players SET avg_fd_points = (points+(rebounds*1.2)+(assists+1.5)+(blocks*2)+(steals*2)+(turnovers*-1))"
+      DB <<   "
+               UPDATE players SET pos='PG' WHERE player_name='Michael CarterWilliams';  
+               UPDATE players SET pos='SG' WHERE player_name='Anthony Morrow'; 
+               UPDATE players SET pos='SG' WHERE player_name='Bradley Beal'; 
+               UPDATE players SET pos='SG' WHERE player_name='Tyreke Evans'; 
+               UPDATE players SET pos='SF' WHERE player_name='Danny Granger'; 
+               UPDATE players SET pos='PG' WHERE player_name='John Jenkins'; 
+               UPDATE players SET pos='SG' WHERE player_name='Gary Harris'; 
+               UPDATE players SET pos='SG' WHERE player_name='Nick Young'; 
+               UPDATE players SET pos='PG' WHERE player_name='Jose Calderon'; 
+               UPDATE players SET pos='SG' WHERE player_name='Victor Oladipo'; 
+               UPDATE players SET pos='SG' WHERE player_name='Eric Bledsoe'; 
+               UPDATE players SET pos='PG' WHERE player_name='Goran Dragic';             
+               UPDATE players SET pos='PG' WHERE player_name='Nick Calathes'; 
+               UPDATE players SET pos='SF' WHERE player_name='Josh Smith'; 
+               UPDATE players SET pos='SF' WHERE player_name='Kevin Durant'; 
+              "
+      #         UPDATE players SET pos='C' WHERE player_name='DeJuan Blair'; 
+      #         UPDATE players SET pos='SF' WHERE player_name='LeBron James'; 
+      #         UPDATE players SET pos='PF' WHERE player_name='Tim Duncan'; 
+      #         UPDATE players SET pos='SF', team_name='SAC' WHERE player_name='Derrick Williams'; 
+      #         UPDATE players SET pos='PF', team_name='MIN' WHERE player_name='Luc MbahaMoute'; 
+      #         UPDATE players SET pos='PG', team_name='SAC' WHERE player_name='Greivis Vasquez'; 
+      #         UPDATE players SET team_name='GSW' WHERE player_name='Jordan Crawford';
+      #         UPDATE players SET team_name='SAC' WHERE player_name='Quincy Acy';
+      #         UPDATE players SET avg_fd_points = (points+(rebounds*1.2)+(assists+1.5)+(blocks*2)+(steals*2)+(turnovers*-1))
+              
       end
     end
     create_player_table
@@ -132,7 +142,7 @@ class CreateTable
               WHERE boxscores.player_name = players.player_name; 
 
               UPDATE boxscores 
-              SET fd_points = (points+(rebounds*1.2)+(assists+1.5)+(blocks*2)+(steals*2)+(turnovers*-1))"
+              SET fd_points = (points+(rebounds*1.2)+(assists*1.5)+(blocks*2)+(steals*2)+(turnovers*-1))"
     end
     create_boxscores_table
 
@@ -174,7 +184,10 @@ class CreateTable
                 ADD COLUMN pos_advantage DECIMAL, 
                 ADD COLUMN injury_date DATE, 
                 ADD COLUMN injury VARCHAR(500), 
-                ADD COLUMN notes VARCHAR(500), 
+                ADD COLUMN notes VARCHAR(500),
+                ADD Column avg_fd_vs_opp DECIMAL, 
+                ADD Column avg_seven_days DECIMAL,
+                ADD Column avg_fourteen_days DECIMAL,                 
                 ADD PRIMARY KEY (player_name);
 
               UPDATE todays_games 
@@ -189,89 +202,23 @@ class CreateTable
                 WHERE todays_games.team_name = schedule.team_name 
                 AND todays_games.date=schedule.date;
 
-              UPDATE todays_games
-                SET fd_points_vs_opp =
-                  (CASE
-                  WHEN todays_games.pos = 'PG' THEN opponent_stats_by_pos.pg_avg_fd
-                  WHEN todays_games.pos = 'SG' THEN opponent_stats_by_pos.sg_avg_fd
-                  WHEN todays_games.pos = 'SF' THEN opponent_stats_by_pos.sf_avg_fd
-                  WHEN todays_games.pos = 'PF' THEN opponent_stats_by_pos.pf_avg_fd
-                  WHEN todays_games.pos = 'C' THEN opponent_stats_by_pos.c_avg_fd
-                  END)
-                FROM opponent_stats_by_pos
-                WHERE opponent_stats_by_pos.team_name=todays_games.opponent;"
+              UPDATE todays_games 
+                  SET avg_fd_vs_opp=
+                  ( 
+                    SELECT ROUND(AVG(boxscores.fd_points),2) 
+                    FROM boxscores 
+                    WHERE boxscores.player_name=todays_games.player_name 
+                    AND todays_games.opponent=boxscores.opponent
+                  );"
+        
     end
     create_todays_game_table
-
-
-
-    def self.get_salaries
-      require_relative "../../script/get_player_salaries"
-    end
-    get_salaries
-
-
-
-    def self.create_injury_list_table
-        injury_list=eval(File.read(File.expand_path("../../../script/injury_list", __FILE__)))
-        DB << "DROP TABLE IF EXISTS injury_list;
-              CREATE TABLE injury_list 
-                (name VARCHAR (32), date DATE, team_name VARCHAR (32), injury VARCHAR(500), notes VARCHAR(500))"
-        
-        injury_list.each do |x|
-          xname=x[:name]
-            player = xname.split(/\s+/,2)
-                strip_first=player[0]
-                strip_first_2=strip_first.tr("'","")
-                strip_first_3=strip_first_2.tr(".","")
-                strip_first_4=strip_first_3.tr("-","")
-                first=strip_first_4.tr(" ","")
-                strip_last=player[1]
-                strip_last_2=strip_last.tr("'","")
-                strip_last_3=strip_last_2.tr(".","")
-                strip_last_4=strip_last_3.tr("-","")
-                last=strip_last_4.tr(" ","")
-          xdate=x[:date]
-          xteam=x[:team]
-          xinjury=x[:injury]
-          xnotes=x[:notes]
-          DB << "INSERT INTO injury_list 
-                  (name, date, team_name, injury, notes) 
-                  VALUES ('#{first} #{last}', '#{xdate}', '#{xteam}', '#{xinjury}', '#{xnotes}');
-                
-                UPDATE todays_games 
-                SET injury=(SELECT 
-                    injury_list.injury 
-                    FROM injury_list 
-                    WHERE injury_list.name=todays_games.player_name), 
-                notes=(SELECT 
-                    injury_list.notes 
-                    FROM injury_list 
-                    WHERE injury_list.name=todays_games.player_name), 
-                injury_date=(SELECT 
-                    injury_list.date 
-                    FROM injury_list 
-                    WHERE injury_list.name=todays_games.player_name);
-                
-                DELETE FROM todays_games WHERE salary=0; 
-
-                DELETE FROM todays_games WHERE salary IS NULL;
-
-                UPDATE todays_games 
-                SET projected_fd_points = round((salary/1000*5),2); 
-
-                UPDATE todays_games 
-                SET plus_minus_percentage = round((avg_fd_points/projected_fd_points),2);"
-        end
-    end
-    create_injury_list_table
-
 
     def self.opponent_stats_by_pos
         DB << "DROP TABLE IF EXISTS opponent_stats_by_pos;
           CREATE TABLE opponent_stats_by_pos (
             team_name VARCHAR(32),
-            pg_avg_fd DECIMAL, sg_avg_fd DECIMAL, sf_avg_fd DECIMAL, pf_avg_fd DECIMAL, c_avg_fd DECIMAL, 
+            pg_avg_fd DECIMAL, sg_avg_fd DECIMAL, sf_avg_fd DECIMAL, pf_avg_fd DECIMAL, c_avg_fd DECIMAL,
             pg_points DECIMAL, pg_rebounds DECIMAL, pg_assists DECIMAL, pg_steals DECIMAL, pg_blocks DECIMAL, pg_turnovers DECIMAL, 
             sg_points DECIMAL, sg_rebounds DECIMAL, sg_assists DECIMAL, sg_steals DECIMAL, sg_blocks DECIMAL, sg_turnovers DECIMAL, 
             sf_points DECIMAL, sf_rebounds DECIMAL, sf_assists DECIMAL, sf_steals DECIMAL, sf_blocks DECIMAL, sf_turnovers DECIMAL, 
@@ -526,16 +473,21 @@ class CreateTable
             FROM boxscores 
             WHERE boxscores.pos='C' 
             AND opponent_stats_by_pos.team_name=boxscores.opponent 
-            AND boxscores.mins>='10');"
+            AND boxscores.mins>='10');
+
+            UPDATE todays_games
+            SET fd_points_vs_opp =
+              (CASE
+              WHEN todays_games.pos = 'PG' THEN opponent_stats_by_pos.pg_avg_fd
+              WHEN todays_games.pos = 'SG' THEN opponent_stats_by_pos.sg_avg_fd
+              WHEN todays_games.pos = 'SF' THEN opponent_stats_by_pos.sf_avg_fd
+              WHEN todays_games.pos = 'PF' THEN opponent_stats_by_pos.pf_avg_fd
+              WHEN todays_games.pos = 'C' THEN opponent_stats_by_pos.c_avg_fd
+              END)
+            FROM opponent_stats_by_pos
+            WHERE opponent_stats_by_pos.team_name=todays_games.opponent;"
     end
     opponent_stats_by_pos
 
 end
-
-
-
-
-
-
-
 
