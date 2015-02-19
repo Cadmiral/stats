@@ -6,7 +6,7 @@ run these two queries in DB:
 
 
 
-UPDATE todays_games SET projected_fd_points = round((salary/1000*5),2); UPDATE todays_games SET plus_minus_percentage = round((avg_fd_points/projected_fd_points),2); DELETE FROM todays_game WHERE salary=0;
+UPDATE todays_games SET projected_fd_points = round((salary/1000*5),2); UPDATE todays_games SET plus_minus_percentage = round((avg_fd_points/projected_fd_points),2); DELETE FROM todays_games WHERE salary=0;
 
 _____________
 
@@ -49,6 +49,37 @@ SELECT avg(boxscores.fd_points) AS pts_given_to_position
 from boxscores INNER JOIN players on players.player_name=boxscores.player_name 
 where players.pos='PG' AND boxscores.opponent='OKC';
 
+_____________
+
+Alter table todays_games
+add column B2B DATE,
+ADD column opp_fd_by_pos,
+add column FD_pts_HOME DECIMAL,
+add column FD_pts_AWAY DECIMAL;
+
+update todays_games
+set b2b =(
+SELECT schedule.date
+From Schedule
+Where date=(current_date - interval '1 day')
+AND todays_games.team_name=schedule.opponent);
+
+
+update todays_games
+set b2b =(
+SELECT schedule.date
+From Schedule
+Where date=(current_date - interval '1 day')
+AND todays_games.team_name=schedule.team_name);
+
+_____________________
+
+
+CREATE TABLE seven_days AS
+SELECT boxscores.player_name, boxscores.fd_points
+FROM boxscores, todays_games
+WHERE boxscores.date >= (CURRENT_DATE - INTERVAL '8days')
+AND boxscores.player_name=todays_games.player_name;
 
 
 

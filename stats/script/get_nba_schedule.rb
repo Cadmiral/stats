@@ -9,7 +9,7 @@ class GetNBASchedule
         end
 
     #get data from bball-refernce
-        doc = Nokogiri::HTML(open("http://www.basketball-reference.com/leagues/NBA_2014_games.html"))
+        doc = Nokogiri::HTML(open("http://www.basketball-reference.com/leagues/NBA_2015_games.html"))
         rows = doc.xpath('//table[@id="games"]/tbody/tr') 
         details = rows.collect do |row|
           detail = {}
@@ -32,9 +32,9 @@ class GetNBASchedule
             when "Boston Celtics"
                 key[:team] = "BOS"
             when "Brooklyn Nets"
-                key[:team] = "BKN"
-            when "Charlotte Bobcats"
-                key[:team] = "CHA"        
+                key[:team] = "BRK"
+            when "Charlotte Hornets"
+                key[:team] = "CHO"        
             when "Chicago Bulls"
                 key[:team] = "CHI"
             when "Cleveland Cavaliers"
@@ -97,9 +97,9 @@ class GetNBASchedule
             when "Boston Celtics"
                 key[:opponent] = "BOS"
             when "Brooklyn Nets"
-                key[:opponent] = "BKN"
-            when "Charlotte Bobcats"
-                key[:opponent] = "CHA"        
+                key[:opponent] = "BRK"
+            when "Charlotte Hornets"
+                key[:opponent] = "CHO"        
             when "Chicago Bulls"
                 key[:opponent] = "CHI"
             when "Cleveland Cavaliers"
