@@ -46,7 +46,7 @@ class BuildNbaBoxScore
             end
 
             #get data from bball-refernce
-            doc = Nokogiri::HTML(open("http://www.basketball-reference.com/players/#{first_letter}/#{url_name}/gamelog/2014"))
+            doc = Nokogiri::HTML(open("http://www.basketball-reference.com/players/#{first_letter}/#{url_name}/gamelog/2015"))
             rows = doc.xpath('//table[@id="pgl_basic"]/tbody/tr')
 
             details = rows.collect do |row|

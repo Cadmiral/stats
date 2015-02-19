@@ -7,7 +7,7 @@ class GetPlayerAvg
     def initialize
 
       #fetch data from site and print out to file player_avg
-      doc = Nokogiri::HTML(open('http://www.basketball-reference.com/leagues/NBA_2014_per_game.html')) 
+      doc = Nokogiri::HTML(open('http://www.basketball-reference.com/leagues/NBA_2015_per_game.html')) 
       rows = doc.xpath('//table[@id="per_game"]/tbody/tr') 
       details = rows.collect do |row|
         detail = {}

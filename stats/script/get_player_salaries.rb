@@ -14,7 +14,7 @@ begin
 
 	# Scrape the data
 	player_table = doc.css('script')
-	salary_data = player_table[1].text
+	salary_data = player_table[2].text
 
 	# Strip out all the bullshit.
 	salary_data.slice! "var NF_DATA = "
@@ -32,6 +32,7 @@ begin
 	# Populater 'salary_dict' variable
 	eval_code = "salary_dict = "
 	eval_code << salary_data
+	# puts salary_data
 	eval(eval_code)
 
 	puts "PLAYER COUNT: %d" % salary_dict['daily_projections'].length

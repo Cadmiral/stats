@@ -1,11 +1,12 @@
 Stats::Application.routes.draw do
+  get "construction/index"
   resources :boxscores
 
   resources :todays_games
 
-  resources :players
+  resources :construction
 
-# root 'todays_games#index'
+ root 'todays_games#index'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
